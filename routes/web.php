@@ -14,3 +14,9 @@
 Route::get('/', function () {
     return view('content.content');
 });
+
+Route::get('/categoria', 'CategoriasController@index');
+Route::post('/categoria/registrar', 'CategoriasController@store');
+Route::put('/categoria/actualizar', 'CategoriasController@update');
+Route::put('/categoria/desactivar', 'CategoriasController@desactivar');
+Route::put('/categoria/activar', 'CategoriasController@activar');
