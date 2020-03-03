@@ -11,7 +11,7 @@
 
                 <h2>Listado de Categorías</h2><br />
 
-                <button class="btn btn-primary btn-lg" type="button" data-toggle="modal" data-target="#abrirmodal">
+                <button class="btn btn-primary btn-lg" type="button" @click="abrirModal('categoria', 'registrar')">
                     <i class="fa fa-plus fa-2x"></i>&nbsp;&nbsp;Agregar Categoría
                 </button>
             </div>
@@ -41,10 +41,10 @@
                     </thead>
                     <tbody>
 
-                        <tr v-for="categoria in arrayCategoria" :key="categoria.id" >
+                        <tr v-for="categoria in arrayCategoria" :key="categoria.id">
 
-                            <td v-text ="categoria.nombre" ></td>
-                            <td v-text ="categoria.descripcion"></td>
+                            <td v-text="categoria.nombre"></td>
+                            <td v-text="categoria.descripcion"></td>
                             <td>
                                 <button type="button" class="btn btn-success btn-md" v-if="categoria.condicion">
 
@@ -58,7 +58,7 @@
                             </td>
 
                             <td>
-                                <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#abrirmodal" >
+                                <button type="button" class="btn btn-info btn-md" @click="abrirModal('categoria', 'registrar', categoria)">
 
                                     <i class="fa fa-edit fa-2x"></i> Editar
                                 </button> &nbsp;
@@ -103,12 +103,12 @@
         <!-- Fin ejemplo de tabla Listado -->
     </div>
     <!--Inicio del modal agregar/actualizar-->
-    <div class="modal fade" id="abrirmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal fade" tabindex="-1" :class="{'mostrar':modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-primary modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Agregar categoría</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <h4 class="modal-title" v-text="tituloModal"></h4>
+                    <button type="button" @click="cerrarModal()" class="close" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
@@ -129,22 +129,23 @@
                         <div class="form-group row">
                             <label class="col-md-3 form-control-label" for="text-input">Categoría</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" placeholder="Nombre de categoría">
+                                <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de categoría">
 
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-md-3 form-control-label" for="email-input">Descripción</label>
                             <div class="col-md-9">
-                                <input type="email" class="form-control" placeholder="Ingrese descripcion">
+                                <input type="email" v-model="descripcion" class="form-control" placeholder="Ingrese descripcion">
                             </div>
                         </div>
 
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times fa-2x"></i> Cerrar</button>
-                    <button type="button" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
+                    <button type="button" class="btn btn-danger" @click="cerrarModal()"><i class="fa fa-times fa-2x"></i> Cerrar</button>
+                    <button type="button" v-if="tipoAccion == 1" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
+                    <button type="button" v-if="tipoAccion == 2" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Actualizar</button>
 
                 </div>
             </div>
@@ -163,7 +164,10 @@ export default {
         return {
             nombre: '',
             descripcion: '',
-            arrayCategoria:[]
+            arrayCategoria: [],
+            modal:0,
+            tituloModal:'',
+            tipoAccion:0
         }
     },
 
@@ -176,14 +180,44 @@ export default {
             axios.get('/categoria')
                 .then(function (response) {
                     // handle success
-                   // console.log(response);
-                   me.arrayCategoria = response.data;
+                    // console.log(response);
+                    me.arrayCategoria = response.data;
                 })
                 .catch(function (error) {
                     //handle error
                     console.log(error);
                 });
 
+        },
+        registrarCategoria() {
+
+        },
+        cerrarModal(){
+            this.modal = 0;
+            this.tituloModal = "";
+            this.nombre = "";
+            this.descripcion = "";
+        },
+        abrirModal(modelo, accion, data = []) {
+            switch (modelo) {
+                case "categoria": {
+                    switch (accion) {
+
+                        case "registrar": {
+                            this.modal = 1;
+                            this.tituloModal = "Registar categoria";
+                            this.nombre = "";
+                            this.descripcion = "";
+                            this.tipoAccion = 1;
+
+                        }
+                        case "actualizar": {
+
+                        }
+
+                    }
+                }
+            }
         }
     },
 
@@ -193,3 +227,16 @@ export default {
     }
 }
 </script>
+<style>
+.modal-content{
+ width: 100% !important;
+ position: absolute !important;   
+}
+.mostrar{
+    display:list-item !important;
+    opacity: 1 !important;
+    position: absolute !important;
+    background-color: #3c29297a;
+
+}
+</style>
