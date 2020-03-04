@@ -144,7 +144,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" @click="cerrarModal()"><i class="fa fa-times fa-2x"></i> Cerrar</button>
-                    <button type="button" v-if="tipoAccion == 1" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
+                    <button type="button"  @click="registrarCategoria()" v-if="tipoAccion == 1" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
                     <button type="button" v-if="tipoAccion == 2" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Actualizar</button>
 
                 </div>
@@ -190,7 +190,23 @@ export default {
 
         },
         registrarCategoria() {
+            let me = this;
 
+            axios.post('/categoria/registrar',{
+            'nombre':this.nombre,
+            'descripcion':this.descripcion    
+
+            })
+                .then(function (response) {
+                    // handle success
+                    // console.log(response);
+                    me.cerrarModal();
+                    me.listarCategoria();
+                })
+                .catch(function (error) {
+                    //handle error
+                    console.log(error);
+                });
         },
         cerrarModal(){
             this.modal = 0;
