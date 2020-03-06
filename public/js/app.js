@@ -2076,7 +2076,9 @@ __webpack_require__.r(__webpack_exports__);
       arrayCategoria: [],
       modal: 0,
       tituloModal: '',
-      tipoAccion: 0
+      tipoAccion: 0,
+      errorCategoria: 0,
+      errorMostrarMsjCategoria: []
     };
   },
   methods: {
@@ -2092,12 +2094,15 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     registrarCategoria: function registrarCategoria() {
+      if (this.validarCategoria()) {
+        return;
+      }
+
       var me = this;
       axios.post('/categoria/registrar', {
         'nombre': this.nombre,
         'descripcion': this.descripcion
       }).then(function (response) {
-        // handle success
         // console.log(response);
         me.cerrarModal();
         me.listarCategoria();
@@ -2105,6 +2110,13 @@ __webpack_require__.r(__webpack_exports__);
         //handle error
         console.log(error);
       });
+    },
+    validarCategoria: function validarCategoria() {
+      this.errorCategoria = 0;
+      this.errorMostrarMsjCategoria = [];
+      if (!this.nombre) this.errorMostrarMsjCategoria.push("(*)El nombre de la categoria no puede estar vacio");
+      if (this.errorMostrarMsjCategoria.length) this.errorCategoria = 1;
+      return this.errorCategoria;
     },
     cerrarModal: function cerrarModal() {
       this.modal = 0;
@@ -2154,7 +2166,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n width: 100% !important;\n position: absolute !important;\n}\n.mostrar{\n    display:list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n width: 100% !important;\n position: absolute !important;\n}\n.mostrar{\n    display:list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a;\n}\n.div-error{\ndisplay: flex;\njustify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n    font-size: 20px;\n}\n", ""]);
 
 // exports
 
@@ -20549,7 +20561,33 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
-                _vm._m(5),
+                _c(
+                  "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.errorCategoria,
+                        expression: "errorCategoria"
+                      }
+                    ],
+                    staticClass: "form-group row div-error"
+                  },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "text-center text-error" },
+                      _vm._l(_vm.errorMostrarMsjCategoria, function(error) {
+                        return _c("div", {
+                          key: error,
+                          domProps: { textContent: _vm._s(error) }
+                        })
+                      }),
+                      0
+                    )
+                  ]
+                ),
                 _vm._v(" "),
                 _c(
                   "form",
@@ -20816,14 +20854,6 @@ var staticRenderFns = [
           ])
         ])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group row div-error" }, [
-      _c("div", { staticClass: "text-center text-error" }, [_c("div")])
     ])
   }
 ]
