@@ -65,11 +65,16 @@
                             </td>
 
                             <td>
-
-                                <button type="button" class="btn btn-danger btn-sm">
+                             <template v-if="categoria.condicion">
+                                <button type="button" class="btn btn-danger btn-sm" @click="desactivarCategoria(categoria.id)">
                                     <i class="fa fa-lock fa-2x"></i> Desactivar
                                 </button>
-
+                             </template>
+                             <template v-else>
+                                <button type="button" class="btn btn-success btn-sm" @click="activarCategoria(categoria.id)">
+                                    <i class="fa fa-lock fa-2x"></i> Activar
+                                </button>
+                             </template>
                             </td>
                         </tr>
 
@@ -125,7 +130,7 @@
 
                     </div>
 
-                    <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                    <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">                  
                         <div class="form-group row">
                             <label class="col-md-3 form-control-label" for="text-input">Categoría</label>
                             <div class="col-md-9">
@@ -145,7 +150,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" @click="cerrarModal()"><i class="fa fa-times fa-2x"></i> Cerrar</button>
                     <button type="button"  @click="registrarCategoria()" v-if="tipoAccion == 1" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
-                    <button type="button" v-if="tipoAccion == 2" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Actualizar</button>
+                    <button type="button" @click="actualizarCategoria()" v-if="tipoAccion == 2" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Actualizar</button>
 
                 </div>
             </div>
@@ -159,9 +164,11 @@
 </template>
 
 <script>
+
 export default {
     data() {
-        return {
+        return {            
+            categoria_id:0,
             nombre: '',
             descripcion: '',
             arrayCategoria: [],
@@ -215,6 +222,94 @@ export default {
                     console.log(error);
                 });
         },
+        actualizarCategoria(){
+              if(this.validarCategoria()){
+
+                return;
+            }
+            
+            let me = this;
+            axios.put('/categoria/actualizar',{               
+            'id':this.categoria_id,    
+            'nombre':this.nombre,
+            'descripcion':this.descripcion            
+            })
+                .then(function (response) {
+                    //console.log(response);
+                    me.cerrarModal();
+                    me.listarCategoria();
+                })
+                .catch(function (error) {
+                    //handle error                                  
+                    console.log(error);
+                });
+        },
+        desactivarCategoria(id){            
+            swal({
+                title: "Estas seguro de desactivar la categoria?",              
+                icon: "warning",
+                buttons: true,                
+                dangerMode: true,
+                buttons: ["Cancelar", "Aceptar"]
+                })
+                .then((willDelete) => {
+                if (willDelete) {
+            let me = this;
+            axios.put('/categoria/desactivar',{               
+            'id':id,    
+                       
+            })
+              .then(function (response) {
+                    //console.log(response);
+                     swal("La categoria ha sido desactivada exitosamente", {
+                    icon: "success",
+                    });
+                    me.cerrarModal();
+                    me.listarCategoria();
+             })
+             .catch(function (error) {
+                     swal("Error actuaizando intente de nuevo!");
+                    //handle error                                  
+                    console.log(error);
+                });
+                    
+                   
+                } 
+             });
+        },
+   activarCategoria(id){            
+            swal({
+                title: "Estas seguro de activar la categoria?",              
+                icon: "warning",
+                buttons: true,                
+                dangerMode: true,
+                buttons: ["Cancelar", "Aceptar"]
+                })
+                .then((willDelete) => {
+                if (willDelete) {
+            let me = this;
+            axios.put('/categoria/activar',{               
+            'id':id,    
+                       
+            })
+              .then(function (response) {
+                    //console.log(response);
+                     swal("La categoria ha sido activada exitosamente", {
+                    icon: "success",
+                    });
+                    me.cerrarModal();
+                    me.listarCategoria();
+             })
+             .catch(function (error) {
+                     swal("Error actuaizando intente de nuevo!");
+                    //handle error                                  
+                    console.log(error);
+                });
+                    
+                   
+                } 
+             });
+        },
         validarCategoria(){
 
         this.errorCategoria = 0;
@@ -242,9 +337,18 @@ export default {
                             this.nombre = "";
                             this.descripcion = "";
                             this.tipoAccion = 1;
+                            
 
                         }
                         case "actualizar": {
+
+                           // console.log(data);
+                            this.modal = 1;
+                            this.tituloModal = "Editar Categoria";
+                            this.tipoAccion = 2;
+                            this.nombre = data["nombre"];
+                            this.descripcion = data["descripcion"];
+                            this.categoria_id = data["id"];
 
                         }
 

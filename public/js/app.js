@@ -1908,6 +1908,13 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2071,6 +2078,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      categoria_id: 0,
       nombre: '',
       descripcion: '',
       arrayCategoria: [],
@@ -2111,6 +2119,81 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
+    actualizarCategoria: function actualizarCategoria() {
+      if (this.validarCategoria()) {
+        return;
+      }
+
+      var me = this;
+      axios.put('/categoria/actualizar', {
+        'id': this.categoria_id,
+        'nombre': this.nombre,
+        'descripcion': this.descripcion
+      }).then(function (response) {
+        //console.log(response);
+        me.cerrarModal();
+        me.listarCategoria();
+      })["catch"](function (error) {
+        //handle error                                  
+        console.log(error);
+      });
+    },
+    desactivarCategoria: function desactivarCategoria(id) {
+      var _this = this;
+
+      swal(_defineProperty({
+        title: "Estas seguro de desactivar la categoria?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true
+      }, "buttons", ["Cancelar", "Aceptar"])).then(function (willDelete) {
+        if (willDelete) {
+          var me = _this;
+          axios.put('/categoria/desactivar', {
+            'id': id
+          }).then(function (response) {
+            //console.log(response);
+            swal("La categoria ha sido desactivada exitosamente", {
+              icon: "success"
+            });
+            me.cerrarModal();
+            me.listarCategoria();
+          })["catch"](function (error) {
+            swal("Error actuaizando intente de nuevo!"); //handle error                                  
+
+            console.log(error);
+          });
+        }
+      });
+    },
+    activarCategoria: function activarCategoria(id) {
+      var _this2 = this;
+
+      swal(_defineProperty({
+        title: "Estas seguro de activar la categoria?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true
+      }, "buttons", ["Cancelar", "Aceptar"])).then(function (willDelete) {
+        if (willDelete) {
+          var me = _this2;
+          axios.put('/categoria/activar', {
+            'id': id
+          }).then(function (response) {
+            //console.log(response);
+            swal("La categoria ha sido activada exitosamente", {
+              icon: "success"
+            });
+            me.cerrarModal();
+            me.listarCategoria();
+          })["catch"](function (error) {
+            swal("Error actuaizando intente de nuevo!"); //handle error                                  
+
+            console.log(error);
+          });
+        }
+      });
+    },
     validarCategoria: function validarCategoria() {
       this.errorCategoria = 0;
       this.errorMostrarMsjCategoria = [];
@@ -2141,7 +2224,15 @@ __webpack_require__.r(__webpack_exports__);
                 }
 
               case "actualizar":
-                {}
+                {
+                  // console.log(data);
+                  this.modal = 1;
+                  this.tituloModal = "Editar Categoria";
+                  this.tipoAccion = 2;
+                  this.nombre = data["nombre"];
+                  this.descripcion = data["descripcion"];
+                  this.categoria_id = data["id"];
+                }
             }
           }
       }
@@ -20500,7 +20591,55 @@ var render = function() {
                       _vm._v("  \n                            ")
                     ]),
                     _vm._v(" "),
-                    _vm._m(3, true)
+                    _c(
+                      "td",
+                      [
+                        categoria.condicion
+                          ? [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-danger btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.desactivarCategoria(
+                                        categoria.id
+                                      )
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("i", { staticClass: "fa fa-lock fa-2x" }),
+                                  _vm._v(
+                                    " Desactivar\n                                "
+                                  )
+                                ]
+                              )
+                            ]
+                          : [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.activarCategoria(categoria.id)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("i", { staticClass: "fa fa-lock fa-2x" }),
+                                  _vm._v(
+                                    " Activar\n                                "
+                                  )
+                                ]
+                              )
+                            ]
+                      ],
+                      2
+                    )
                   ])
                 }),
                 0
@@ -20508,7 +20647,7 @@ var render = function() {
             ]
           ),
           _vm._v(" "),
-          _vm._m(4)
+          _vm._m(3)
         ])
       ])
     ]),
@@ -20721,7 +20860,12 @@ var render = function() {
                       "button",
                       {
                         staticClass: "btn btn-success",
-                        attrs: { type: "button" }
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            return _vm.actualizarCategoria()
+                          }
+                        }
                       },
                       [
                         _c("i", { staticClass: "fa fa-save fa-2x" }),
@@ -20795,21 +20939,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Cambiar Estado")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c(
-        "button",
-        { staticClass: "btn btn-danger btn-sm", attrs: { type: "button" } },
-        [
-          _c("i", { staticClass: "fa fa-lock fa-2x" }),
-          _vm._v(" Desactivar\n                                ")
-        ]
-      )
     ])
   },
   function() {

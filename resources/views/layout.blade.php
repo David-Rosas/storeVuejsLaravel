@@ -25,7 +25,7 @@
         </button>
         <ul class="nav navbar-nav d-md-down-none">
             <li class="nav-item px-3">
-                <a class="nav-link" href="#">Dashbord</a>
+                <a class="nav-link" href="#">Dashboard</a>
             </li>
            
         </ul>
