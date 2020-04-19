@@ -12,10 +12,24 @@ class CategoriasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categorias = Categoria::all();
-        return $categorias;
+        //segurity request only ajax
+        //if(!$request->ajax()) return redirect('/');
+        //si no se cumple le ejecuta lo siguiente
+        $categorias = Categoria::paginate(2);
+        return[
+            'pagination' => [
+             'total'         => $categorias->total(),
+             'current_page'  => $categorias->currentPage(),
+             'per_page'      => $categorias->perPage(),
+             'last_page'     => $categorias->lastPage(),
+             'from'          => $categorias->firstItem(),
+             'to'            => $categorias->lastItem(),
+            ],
+        'categorias' => $categorias      
+        ];
+        
     }
 
     /**
@@ -26,6 +40,9 @@ class CategoriasController extends Controller
      */
     public function store(Request $request)
     {
+       //segurity request only ajax
+       if(!$request->ajax()) return redirect('/');
+
         $categoria = new Categoria();
         $categoria->nombre = $request->nombre;
         $categoria->descripcion = $request->descripcion;
@@ -42,6 +59,8 @@ class CategoriasController extends Controller
      */
     public function update(Request $request)
     {
+       //segurity request only ajax
+        if(!$request->ajax()) return redirect('/');
         //return $request;
         $categoria = Categoria::findOrFail($request->id);
         $categoria->nombre = $request->nombre;
@@ -53,7 +72,10 @@ class CategoriasController extends Controller
     }
 
     public function desactivar(Request $request)
-    {      
+    {  
+        //segurity request only ajax
+        if(!$request->ajax()) return redirect('/');
+
         $categoria = Categoria::findOrFail($request->id);        
         $categoria->condicion = '0';
         $categoria->save();
@@ -61,6 +83,9 @@ class CategoriasController extends Controller
 
     public function activar(Request $request)
     {
+       //segurity request only ajax
+       if(!$request->ajax()) return redirect('/');
+
         $categoria = Categoria::findOrFail($request->id);        
         $categoria->condicion = '1';
         $categoria->save();
