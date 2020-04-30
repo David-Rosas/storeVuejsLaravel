@@ -185,11 +185,11 @@ export default {
 
     computed:{
         isActived: function(){
-            return this.pagination,current_page;
+            return this.pagination.current_page;
         },
         //calcula los elementos de la paginacion.
-        pagesNumber: function(){
-            
+        pagesNumber: function(){        
+          
             if(!this.pagination.to){
                 return[];
             }
@@ -231,7 +231,7 @@ export default {
             axios.get(url)
                 .then(function (response) {
                     // handle success
-                    // console.log(response);
+                   //console.log(response);
                     var respuesta = response.data;
                     me.arrayCategoria = respuesta.categorias.data;
                     me.pagination = respuesta.pagination;
@@ -243,8 +243,7 @@ export default {
 
         },
         cambiarPagina(page){
-            let me = this;
-
+            let me = this;          
             //actualiza la pagina actual 
             me.pagination.current_page = page;
             me.listarCategoria(page);

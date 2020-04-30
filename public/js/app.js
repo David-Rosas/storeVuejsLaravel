@@ -2091,7 +2091,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   computed: {
     isActived: function isActived() {
-      return this.pagination, current_page;
+      return this.pagination.current_page;
     },
     //calcula los elementos de la paginacion.
     pagesNumber: function pagesNumber() {
@@ -2127,7 +2127,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var url = '/categoria?page=' + page;
       axios.get(url).then(function (response) {
         // handle success
-        // console.log(response);
+        //console.log(response);
         var respuesta = response.data;
         me.arrayCategoria = respuesta.categorias.data;
         me.pagination = respuesta.pagination;
