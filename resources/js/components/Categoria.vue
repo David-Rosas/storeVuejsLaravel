@@ -19,12 +19,12 @@
                 <div class="form-group row">
                     <div class="col-md-6">
                         <div class="input-group">
-                            <select class="form-control col-md-3">
+                            <select class="form-control col-md-3" v-model="criterio">
                                 <option value="nombre">Categoría</option>
                                 <option value="descripcion">Descripción</option>
                             </select>
-                            <input type="text" class="form-control" placeholder="Buscar texto">
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                            <input type="text"  class="form-control" placeholder="Buscar texto" @keyup.enter="listarCategoria(1, buscar, criterio)" v-model="buscar">
+                            <button type="submit" @click="listarCategoria(1, buscar, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                         </div>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                             </td>
 
                             <td>
-                                <button type="button" class="btn btn-info btn-md" @click="abrirModal('categoria', 'registrar', categoria)">
+                                <button type="button" class="btn btn-info btn-md" @click="abrirModal('categoria', 'actualizar', categoria)">
 
                                     <i class="fa fa-edit fa-2x"></i> Editar
                                 </button> &nbsp;
@@ -83,14 +83,14 @@
                 <nav>
                     <ul class="pagination">
                         <li v-if="pagination.current_page > 1" class="page-item">
-                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)" >Anterior</a>
+                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1, buscar, criterio)" >Anterior</a>
                         </li>
                         <li v-for="page in pagesNumber" :key="page" class="page-item" :class="[page == isActived ? 'active' : '']">
-                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
+                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page, buscar, criterio)" v-text="page"></a>
                         </li>                       
 
                         <li v-if="pagination.current_page < pagination.last_page"  class="page-item">
-                            <a class="page-link" href="#" @click.prevent="pagination.current_page + 1">Siguiente</a>
+                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1, buscar, criterio )">Siguiente</a>
                         </li>
                     </ul>
                 </nav>
@@ -177,7 +177,9 @@ export default {
                 "to": 0
             },
             
-            offset: 3
+            offset: 3,
+            criterio:'nombre',
+            buscar:'',
 
         }
 
@@ -222,11 +224,11 @@ export default {
 
     methods: {
 
-        listarCategoria(page) {
+        listarCategoria(page, buscar, criterio) {
 
             let me = this;
 
-            var url = '/categoria?page=' + page;
+            var url = '/categoria?page=' + page +'&buscar=' + buscar + '&criterio=' + criterio;
 
             axios.get(url)
                 .then(function (response) {
@@ -242,11 +244,11 @@ export default {
                 });
 
         },
-        cambiarPagina(page){
+        cambiarPagina(page, buscar, criterio){
             let me = this;          
             //actualiza la pagina actual 
             me.pagination.current_page = page;
-            me.listarCategoria(page);
+            me.listarCategoria(page, buscar, criterio);
 
         },
         registrarCategoria() {
@@ -266,7 +268,7 @@ export default {
                 .then(function (response) {
                     // console.log(response);
                     me.cerrarModal();
-                    me.listarCategoria();
+                    me.listarCategoria(1, '', 'nombre');
                 })
                 .catch(function (error) {
                     //handle error
@@ -288,7 +290,7 @@ export default {
                 .then(function (response) {
                     //console.log(response);
                     me.cerrarModal();
-                    me.listarCategoria();
+                    me.listarCategoria(1, '', 'nombre');
                 })
                 .catch(function (error) {
                     //handle error                                  
@@ -315,7 +317,7 @@ export default {
                      swal("La categoria ha sido desactivada exitosamente", {
                     icon: "success",
                     });                    
-                    me.listarCategoria();
+                    me.listarCategoria(1, '', 'nombre');
              })
              .catch(function (error) {
                      swal("Error actuaizando intente de nuevo!");
@@ -347,7 +349,7 @@ export default {
                      swal("La categoria ha sido activada exitosamente", {
                     icon: "success",
                     });                   
-                    me.listarCategoria();
+                    me.listarCategoria(1, '', 'nombre');
              })
              .catch(function (error) {
                      swal("Error actuaizando intente de nuevo!");
@@ -387,11 +389,12 @@ export default {
                             this.descripcion = "";
                             this.tipoAccion = 1;
                             
+                            break;
 
                         }
                         case "actualizar": {
 
-                           // console.log(data);
+                            console.log(data);
                             this.modal = 1;
                             this.tituloModal = "Editar Categoria";
                             this.tipoAccion = 2;
@@ -399,6 +402,7 @@ export default {
                             this.descripcion = data["descripcion"];
                             this.categoria_id = data["id"];
 
+                            break;
                         }
 
                     }
@@ -408,7 +412,7 @@ export default {
     },
 
     mounted() {
-        this.listarCategoria();
+        this.listarCategoria(1, this.buscar, this.criterio);
         //console.log('component mounted');
     }
 }

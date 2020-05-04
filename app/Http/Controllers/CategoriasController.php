@@ -15,9 +15,16 @@ class CategoriasController extends Controller
     public function index(Request $request)
     {
         //segurity request only ajax
-        //if(!$request->ajax()) return redirect('/');
+        if(!$request->ajax()) return redirect('/');
         //si no se cumple le ejecuta lo siguiente
-        $categorias = Categoria::paginate(2);
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;     
+       if($buscar ==""){
+            $categorias = Categoria::orderBy('id', 'desc')->paginate(3);
+        }else{                
+            $categorias = Categoria::where($criterio, 'like', '%'.$buscar.'%')->orderBy('id', 'desc')->paginate(3);
+        }
+        
         return[
             'pagination' => [
              'total'         => $categorias->total(),
