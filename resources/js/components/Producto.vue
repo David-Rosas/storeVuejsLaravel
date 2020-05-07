@@ -64,7 +64,6 @@
 
                             <td>
                                 <button type="button" class="btn btn-info btn-md" @click="abrirModal('producto', 'actualizar', producto)">
-
                                     <i class="fa fa-edit fa-2x"></i> Editar
                                 </button> &nbsp;
                             </td>
@@ -154,7 +153,11 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Codigo</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="codigo" class="form-control" placeholder="Codigo de barras">
+                                     <input type="text" v-model="codigo" class="form-control" placeholder="Codigo de barras">
+                                     <barcode :value="codigo" :option="{format:'EAN-13'}">
+                                        Creando código de barra.
+                                    </barcode>
+
                                        
                                     </div>
                                 </div>
@@ -188,8 +191,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" @click="cerrarModal()"><i class="fa fa-times fa-2x"></i> Cerrar</button>
-                    <button type="button"  @click="registrarCategoria()" v-if="tipoAccion == 1" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
-                    <button type="button" @click="actualizarCategoria()" v-if="tipoAccion == 2" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Actualizar</button>
+                    <button type="button"  @click="registrarProducto()" v-if="tipoAccion == 1" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
+                    <button type="button" @click="actualizarProducto()" v-if="tipoAccion == 2" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Actualizar</button>
 
                 </div>
             </div>
@@ -203,9 +206,11 @@
 </template>
 
 <script>
+import VueBarcode from 'vue-barcode';
 
 export default {
     data() {
+        
         return {            
             producto_id:0,
             idcategoria:0,
@@ -236,7 +241,9 @@ export default {
         }
 
     },
-
+components: {
+    'barcode': VueBarcode
+  },
     computed:{
         isActived: function(){
             return this.pagination.current_page;
@@ -331,8 +338,12 @@ export default {
             
             let me = this;
             
-            axios.post('/categoria/registrar',{
-            'nombre':this.nombre,             
+            axios.post('/producto/registrar',{
+                'idcategoria':this.idcategoria,
+                'codigo':this.codigo,
+                'nombre':this.nombre,
+                'stock':this.stock,
+                'precio_venta':this.precio_venta             
 
             })
                 .then(function (response) {
@@ -352,9 +363,14 @@ export default {
             }
             
             let me = this;
-            axios.put('/Producto/actualizar',{               
-            'id':this.categoria_id,    
-            'nombre':this.nombre,                      
+            axios.put('/producto/actualizar',{               
+                'idcategoria':this.idcategoria,
+                'codigo':this.codigo,
+                'nombre':this.nombre,
+                'stock':this.stock,
+                'precio_venta':this.precio_venta,
+                'id':this.producto_id     
+
             })
                 .then(function (response) {
                     //console.log(response);
@@ -434,7 +450,11 @@ export default {
 
         this.errorProducto = 0;
         this.errorMostrarMsjProducto = [];
-        if(!this.nombre) this.errorMostrarMsjProducto.push("(*)El nombre de la categoria no puede estar vacio");
+
+             if(this.idcategoria==0) this.errorMostrarMsjProducto.push("(*)Selecciona una categoria");
+             if(!this.nombre) this.errorMostrarMsjProducto.push("(*)El nombre del producto no puede estar vacio");
+             if(!this.precio_venta) this.errorMostrarMsjProducto.push("(*)El precio venta del producto debe ser un numero y no puede estar vacio");
+             if(!this.stock) this.errorMostrarMsjProducto.push("(*)El stock del producto debe ser un numero y no puede estar vacio");                
         
         if(this.errorMostrarMsjProducto.length) this.errorProducto = 1; 
          
@@ -472,7 +492,7 @@ export default {
                         }
                         case "actualizar": {
 
-                            console.log(data);
+                            //console.log(data);
                             this.modal = 1;
                             this.tituloModal = "Editar Producto";
                             this.tipoAccion = 2;
