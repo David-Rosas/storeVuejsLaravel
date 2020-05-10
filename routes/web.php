@@ -27,3 +27,7 @@ Route::post('/producto/registrar', 'ProductoController@store');
 Route::put('/producto/actualizar', 'ProductoController@update');
 Route::put('/producto/desactivar', 'ProductoController@desactivar');
 Route::put('/producto/activar', 'ProductoController@activar');
+
+Route::get('/proveedor', 'ProveedorController@index');
+Route::post('/proveedor/registrar', 'ProveedorController@store');
+Route::put('/proveedor/actualizar', 'ProveedorController@update');
