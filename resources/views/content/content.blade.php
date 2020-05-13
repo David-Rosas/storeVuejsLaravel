@@ -26,6 +26,6 @@
     <h1>Contenido 7</h1>
 </template>
 <template v-if="menu==8">
-    <h1>Contenido 8</h1>
+    <role></role>
 </template>
 @endsection
