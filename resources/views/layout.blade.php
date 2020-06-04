@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Sistema Compras-Ventas con Laravel y Vue Js- webtraining-it.com">
     <meta name="keyword" content="Sistema Compras-Ventas con Laravel y Vue Js">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <title>Proyecto</title>
      <!-- Main styles for this application -->
     <link href="css/plantilla.css" rel="stylesheet">
@@ -29,12 +31,13 @@
             </li>
            
         </ul>
-        <ul class="nav navbar-nav ml-auto">
+        <ul class="nav navbar-nav ml-auto">     
 
             <li class="nav-item dropdown">
+
                 <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     <img src="img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
-                    <span class="d-md-down-none">usuario </span>
+                    <span class="d-md-down-none">{{Auth::user()->usuario}}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <div class="dropdown-header text-center">
@@ -44,8 +47,8 @@
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class="fa fa-lock"></i> Cerrar sesión</a>
 
-                    <form id="logout-form" action="" method="POST" style="display: none;">
-                      
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                       @csrf
                     </form>
                 </div>
             </li>
