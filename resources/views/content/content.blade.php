@@ -13,7 +13,7 @@
     <producto></producto>
 </template>
 <template v-if="menu==3">
-    <h1>compras</h1>
+    <compra></compra>
 </template>
 <template v-if="menu==4">
     <proveedor></proveedor>

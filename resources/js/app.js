@@ -25,6 +25,7 @@ Vue.component('producto', require('./components/Producto.vue').default);
 Vue.component('proveedor', require('./components/Proveedor.vue').default);
 Vue.component('role', require('./components/Role.vue').default);
 Vue.component('user', require('./components/User.vue').default);
+Vue.component('compra', require('./components/Compra.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
